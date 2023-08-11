@@ -1,6 +1,44 @@
 const express = require("express");
 const app = express();
+const cors = require('cors');
+const bodyParser = require('body-parser');
 const port = process.env.PORT || 3001;
+
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+
+app.post('/send', async (req, res) => {
+    let { subject, email, text } = req.body;
+
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'wangjia3@oregonstate.edu',
+            pass: 'Ycai346@gatech'
+        }
+    });
+
+    let mailOptions = {
+        from: email,
+        to: 'wangjia3@oregonstate.edu',
+        subject,
+        text
+    };
+
+    transporter.sendMail(mailOptions, (err, data) => {
+        if (err) {
+            res.json({
+                status: 'fail',
+                error: err.message,
+            });
+        } else {
+            res.json({
+                status: 'success',
+            });
+        }
+    })
+})
 
 app.get("/", (req, res) => res.type('html').send(html));
 
