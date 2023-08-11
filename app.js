@@ -1,11 +1,12 @@
 const express = require("express");
+const nodemailer = require('nodemailer');  // Added nodemailer module
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 5000;
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json());  // Ensure body-parser is used before route handlers
 
 app.post('/send', async (req, res) => {
     let { subject, email, text } = req.body;
@@ -37,7 +38,7 @@ app.post('/send', async (req, res) => {
             });
         }
     })
-})
+});
 
 app.get("/", (req, res) => res.type('html').send(html));
 
