@@ -32,7 +32,7 @@ app.post('/send', async (req, res) => {
         from: email,
         to: 'wangjia3@oregonstate.edu',
         subject,
-        email
+        email,
         message,
         username,
         phoneNumber
