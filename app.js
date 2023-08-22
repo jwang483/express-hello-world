@@ -10,7 +10,7 @@ app.use(bodyParser.json());  // Ensure body-parser is used before route handlers
 
 app.post('/send', async (req, res) => {
     console.log(req.body);
-    let { subject, email, text} = req.body;
+    let { subject, email, message, username,phoneNumber} = req.body;
 
     let transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -24,8 +24,10 @@ app.post('/send', async (req, res) => {
         from: email,
         to: 'wangjia3@oregonstate.edu',
         subject,
-        text,
-        email
+        message,
+        email,
+        username,
+        phoneNumber
         
     };
 
