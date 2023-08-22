@@ -23,9 +23,10 @@ app.post('/send', async (req, res) => {
         from: email,
         to: 'wangjia3@oregonstate.edu',
         subject,
-        text: `
-        Subject: ${subject}
-        `
+        text,
+        Subject: ${subject},
+        Email:  ${email}
+        
     };
 
     transporter.sendMail(mailOptions, (err, data) => {
