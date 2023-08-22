@@ -18,8 +18,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/send', async (req, res) => {
-    console.log("Received request:", req.body);
-    let { subject, email, message, username,phoneNumber} = req.body;
+    let { subject, email, text } = req.body;
 
     let transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -33,10 +32,8 @@ app.post('/send', async (req, res) => {
         from: email,
         to: 'wangjia3@oregonstate.edu',
         subject,
-        text: 'This is a hardcoded test message.'
+        text
     };
-
-    console.log("Mail Options:", mailOptions);
 
     transporter.sendMail(mailOptions, (err, data) => {
         if (err) {
@@ -54,5 +51,5 @@ app.post('/send', async (req, res) => {
 
 
 app.listen(3001, () => {
-  console.log('Server is running');
+  console.log(`Server is running);
 });
