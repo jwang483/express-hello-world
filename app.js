@@ -1,104 +1,202 @@
-const express = require("express");
-const nodemailer = require('nodemailer');  // Added nodemailer module
-const app = express();
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const port = process.env.PORT || 5000;
+import React,{useState} from 'react'
+import Title from '../layouts/Title';
+import axios from 'axios';
 
-app.use(cors());
-app.use(bodyParser.json());  // Ensure body-parser is used before route handlers
+const Contact = () => {
+  const [username, setUsername] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
-app.post('/send', async (req, res) => {
-    console.log(req.body);
-    let { subject, email, message, username,phoneNumber} = req.body;
+  //Email Validation
+  const emailValidation = () => {
+    return String(email)
+      .toLocaleLowerCase()
+      .match(/^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/);
+  };
 
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'wangjia3@oregonstate.edu',
-            pass: 'Ycai346@gatech'
-        }
-    });
-
-    let mailOptions = {
-        from: email,
-        to: 'wangjia3@oregonstate.edu',
-        subject,
-        message,
-        email,
-        username,
-        phoneNumber
-        
-    };
-
-    transporter.sendMail(mailOptions, (err, data) => {
-        if (err) {
-            res.json({
-                status: 'fail',
-                error: err.message,
+  const handleSend = async (e) => {
+    e.preventDefault();
+    if (username === "") {
+        setErrMsg("Please enter your name");
+    } else if (phoneNumber === "") {
+        setErrMsg("Please enter your phone number");
+    } else if (email === "") {
+        setErrMsg("Please enter your Email!");
+    } else if (!emailValidation(email)) {
+        setErrMsg("Please enter a valid Email");
+    } else if (subject === "") {
+        setErrMsg("Please give your Subject");
+    } else if (message === "") {
+        setErrMsg("Message is required!");
+    } else {
+        try {
+            const response = await axios.post('https://test-server-6kaz.onrender.com/send', {
+                subject,
+                email,
+                text: message
             });
-        } else {
-            res.json({
-                status: 'success',
-            });
+
+            if (response.data.status === 'success') {
+                setSuccessMsg(`Thank you dear ${username}, Your Messages has been sent Successfully!`);
+                setErrMsg("");
+                setUsername("");
+                setPhoneNumber("");
+                setEmail("");
+                setSubject("");
+                setMessage("");
+            } else {
+                throw new Error(`Failed to send message. Server responded with status 'fail'. Error: ${response.data.error}`);
+            }
+        } catch (error) {
+          setErrMsg(error.message);
         }
-    })
-});
 
-app.get("/", (req, res) => res.type('html').send(html));
+    }
+};
 
-const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+  const ContactLeft = () => {
+    return (
+      <div className="w-full lgl:w-[35%] h-full bg-gradient-to-r from-[#1e2024] to-[#23272b] p-4 lgl:p-8 rounded-lg shadow-shadowOne flex flex-col gap-5 justify-center">
+        <div className="flex flex-col gap-1">
+          <h3 className="text-3xl font-bold text-white">Jiajie Wang</h3>
+          <p className="text-lg font-normal text-gray-400">
+            MERN Stack Developer
+          </p>
+          <p className="text-base text-gray-400 tracking-wide">
+            I am a passionate MERN stack developer with expertise in building dynamic websites. 
+          </p>
+          <p className="text-base text-gray-400 flex items-center gap-2">
+            Phone: <span className="text-lightText">437-925-8754</span>
+          </p>
+          <p className="text-base text-gray-400 flex items-center gap-2">
+            Email: <span className="text-lightText">wangjia3@oregonstate.edu</span>
+          </p>
+          <p className="text-base text-gray-400 flex items-center gap-2">
+            Github: <span className="text-lightText">https://github.com/jwang483</span>
+          </p>
+        </div>
+      </div>
+    );
+  }
 
-server.keepAliveTimeout = 120 * 1000;
-server.headersTimeout = 120 * 1000;
 
-const html = `
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Hello from Render!</title>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <script>
-      setTimeout(() => {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-          disableForReducedMotion: true
-        });
-      }, 500);
-    </script>
-    <style>
-      @import url("https://p.typekit.net/p.css?s=1&k=vnd5zic&ht=tk&f=39475.39476.39477.39478.39479.39480.39481.39482&a=18673890&app=typekit&e=css");
-      @font-face {
-        font-family: "neo-sans";
-        src: url("https://use.typekit.net/af/00ac0a/00000000000000003b9b2033/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("woff2"), url("https://use.typekit.net/af/00ac0a/00000000000000003b9b2033/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("woff"), url("https://use.typekit.net/af/00ac0a/00000000000000003b9b2033/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("opentype");
-        font-style: normal;
-        font-weight: 700;
-      }
-      html {
-        font-family: neo-sans;
-        font-weight: 700;
-        font-size: calc(62rem / 16);
-      }
-      body {
-        background: white;
-      }
-      section {
-        border-radius: 1em;
-        padding: 1em;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        margin-right: -50%;
-        transform: translate(-50%, -50%);
-      }
-    </style>
-  </head>
-  <body>
-    <section>
-      Hello from Render!
+
+  return (
+    <section
+      id="contact"
+      className="w-full py-20 border-b-[1px] border-b-black"
+    >
+      <div className="flex flex-col justify-center items-center text-center">
+        <h1 className="text-3xl font-bold pb-4">Welcome to Jiajie Wang Contact Page</h1>
+        <Title title="CONTACT" des="Lets Connect " />
+      </div>
+      <div className="w-full">
+        <div className="w-full h-auto flex flex-col lgl:flex-row justify-between">
+          <ContactLeft />
+          <div className="w-full lgl:w-[60%] h-full py-10 bg-gradient-to-r from-[#1e2024] to-[#23272b] flex flex-col gap-8 p-4 lgl:p-8 rounded-lg shadow-shadowOne">
+            <form className="w-full flex flex-col gap-4 lgl:gap-6 py-2 lgl:py-5">
+              {errMsg && (
+                <p className="py-3 bg-gradient-to-r from-[#1e2024] to-[#23272b] shadow-shadowOne text-center text-orange-500 text-base tracking-wide animate-bounce">
+                  {errMsg}
+                </p>
+              )}
+              {successMsg && (
+                <p className="py-3 bg-gradient-to-r from-[#1e2024] to-[#23272b] shadow-shadowOne text-center text-green-500 text-base tracking-wide animate-bounce">
+                  {successMsg}
+                </p>
+              )}
+              <div className="w-full flex flex-col lgl:flex-row gap-10">
+                <div className="w-full lgl:w-1/2 flex flex-col gap-4">
+                  <p className="text-sm text-gray-400 uppercase tracking-wide">
+                    Your name
+                  </p>
+                  <input
+                    onChange={(e) => setUsername(e.target.value)}
+                    value={username}
+                    className={`${
+                      errMsg === "Username is required!" &&
+                      "outline-designColor"
+                    } contactInput`}
+                    type="text"
+                  />
+                </div>
+                <div className="w-full lgl:w-1/2 flex flex-col gap-4">
+                  <p className="text-sm text-gray-400 uppercase tracking-wide">
+                    Phone Number
+                  </p>
+                  <input
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    value={phoneNumber}
+                    className={`${
+                      errMsg === "Phone number is required!" &&
+                      "outline-designColor"
+                    } contactInput`}
+                    type="text"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-4">
+                <p className="text-sm text-gray-400 uppercase tracking-wide">
+                  Email
+                </p>
+                <input
+                  onChange={(e) => setEmail(e.target.value)}
+                  value={email}
+                  className={`${
+                    errMsg === "Please give your Email!" &&
+                    "outline-designColor"
+                  } ${
+                    errMsg === "Give a valid Email!" && "outline-designColor"
+                  } contactInput`}
+                  type="text"
+                />
+              </div>
+              <div className="flex flex-col gap-4">
+                <p className="text-sm text-gray-400 uppercase tracking-wide">
+                  Subject
+                </p>
+                <input
+                  onChange={(e) => setSubject(e.target.value)}
+                  value={subject}
+                  className={`${
+                    errMsg === "Please give your Subject!" &&
+                    "outline-designColor"
+                  } contactInput`}
+                  type="text"
+                />
+              </div>
+              <div className="flex flex-col gap-4">
+                <p className="text-sm text-gray-400 uppercase tracking-wide">
+                  Your Message
+                </p>
+                <textarea
+                  onChange={(e) => setMessage(e.target.value)}
+                  value={message}
+                  className={`${
+                    errMsg === "Message is required!" &&
+                    "outline-designColor"
+                  } textareaInput`}
+                  rows="10"
+                  cols="50"
+                >
+                </textarea>
+              </div>
+              <button
+                onClick={handleSend}
+                className="w-full bg-gradient-to-r from-pink-500 to-purple-500 py-4 text-white text-lg uppercase tracking-wide rounded-sm transition-all hover:shadow-shadowOne"
+              >
+                Send Message
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </section>
-  </body>
-</html>
-`
+  );
+}
+
+export default Contact;
