@@ -30,12 +30,13 @@ app.post('/send', async (req, res) => {
     });
 
     let mailOptions = {
-        console.log("Mail Options:", mailOptions);
         from: email,
         to: 'wangjia3@oregonstate.edu',
         subject,
         text: 'This is a hardcoded test message.'
     };
+
+    console.log("Mail Options:", mailOptions);
 
     transporter.sendMail(mailOptions, (err, data) => {
         if (err) {
