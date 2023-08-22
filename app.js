@@ -50,5 +50,5 @@ app.post('/send', async (req, res) => {
 })
 
 app.listen(3001, () => {
-  console.log(`Server is running);
+  console.log(`Server is running');
 });
