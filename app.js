@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/send', async (req, res) => {
-    console.log(req.body);
+    console.log("Received request:", req.body);
     let { subject, email, message, username,phoneNumber} = req.body;
 
     let transporter = nodemailer.createTransport({
@@ -30,10 +30,11 @@ app.post('/send', async (req, res) => {
     });
 
     let mailOptions = {
+        console.log("Mail Options:", mailOptions);
         from: email,
         to: 'wangjia3@oregonstate.edu',
         subject,
-        text: `From: ${username}\nEmail: ${email}\nPhone: ${phoneNumber}\n\nMessage:\n${message}`
+        text: 'This is a hardcoded test message.'
     };
 
     transporter.sendMail(mailOptions, (err, data) => {
