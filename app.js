@@ -24,7 +24,7 @@ app.post('/send', async (req, res) => {
         to: 'wangjia3@oregonstate.edu',
         subject,
         text,
-        Subject: ${subject},
+        Subject: ${subject}
         Email:  ${email}
         
     };
