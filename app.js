@@ -9,7 +9,9 @@ app.use(cors());
 app.use(bodyParser.json());  // Ensure body-parser is used before route handlers
 
 app.post('/send', async (req, res) => {
+    console.log(req.body);
     let { subject, email, text } = req.body;
+    console.log(text);
 
     let transporter = nodemailer.createTransport({
         service: 'gmail',
