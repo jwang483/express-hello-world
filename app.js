@@ -20,11 +20,18 @@ app.post('/send', async (req, res) => {
         }
     });
 
+    let emailContent = `
+        From: ${username}
+        Phone: ${phoneNumber}
+        Email: ${email}
+        Message: ${text}
+    `;
+
     let mailOptions = {
         from: email,
         to: 'wangjia3@oregonstate.edu',
         subject,
-        text
+        text: emailContent
     };
 
     transporter.sendMail(mailOptions, (err, data) => {
